@@ -23,6 +23,7 @@ class ExtractorName(StrEnum):
     CONCHV1_5 = "conchv1_5"
     GIGAPATH = "gigapath"
     H_OPTIMUS_0 = "h_optimus_0"
+    H_OPTIMUS_1 = "h_optimus_1"
     UNI2 = "uni2"
 
 class PreprocessingConfig(BaseModel, arbitrary_types_allowed=True):

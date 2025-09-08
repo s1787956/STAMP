@@ -3,7 +3,7 @@ from typing import cast
 
 try:
     import timm
-    import uni as _  # noqa: F401
+    #import uni as _  # noqa: F401
     from PIL.Image import Image
     from timm.data.config import resolve_data_config
     from timm.data.transforms_factory import create_transform

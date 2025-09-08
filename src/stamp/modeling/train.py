@@ -57,7 +57,7 @@ def train_categorical_model_(
     filename_label: PandasLabel,
     categories: Sequence[Category] | None,
     # Dataset and -loader parameters
-    bag_size: int,
+    bag_size: int | None,
     num_workers: int,
     # Training paramenters
     batch_size: int,
@@ -259,7 +259,7 @@ def setup_model_for_training(
     *,
     patient_to_data: Mapping[PatientId, PatientData[GroundTruth]],
     categories: Sequence[Category] | None,
-    bag_size: int,
+    bag_size: int | None,
     batch_size: int,
     num_workers: int,
     train_transform: Callable[[torch.Tensor], torch.Tensor] | None,
@@ -298,7 +298,8 @@ def setup_model_for_training(
             list(patient_to_data), stratify=ground_truths, shuffle=True, random_state=0
         ),
     )
-
+    if not bag_size:
+        assert batch_size == 1, "If bag_size is None, batch_size must be 1"
     train_dl, train_categories = dataloader_from_patient_data(
         patient_data=[patient_to_data[patient] for patient in train_patients],
         categories=categories,

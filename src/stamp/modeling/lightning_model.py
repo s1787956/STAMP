@@ -123,7 +123,8 @@ class LitVisionTransformer(lightning.LightningModule):
         bags, coords, bag_sizes, targets = batch
 
         logits = self.vision_transformer(
-            bags, coords=coords, mask=_mask_from_bags(bags=bags, bag_sizes=bag_sizes)
+            bags, coords=coords,# mask=_mask_from_bags(bags=bags, bag_sizes=bag_sizes)
+            mask=None,alibi_mask=None
         )
 
         loss = nn.functional.cross_entropy(
@@ -192,7 +193,8 @@ class LitVisionTransformer(lightning.LightningModule):
     ) -> Float[Tensor, "batch logit"]:
         bags, coords, bag_sizes, _ = batch
         return self.vision_transformer(
-            bags, coords=coords, mask=_mask_from_bags(bags=bags, bag_sizes=bag_sizes)
+            bags, coords=coords, mask=None, #_mask_from_bags(bags=bags, bag_sizes=bag_sizes), 
+            alibi_mask=None
         )
 
     def configure_optimizers(self) -> optim.Optimizer:

@@ -191,26 +191,32 @@ class BagDataset(Dataset[tuple[_Bag, _Coordinates, BagSize, _EncodedTarget]]):
 
 def _get_coords_um(feature_h5: h5py.File) -> Tensor:
     """Get coordinates in um from h5 file"""
-    coords = torch.from_numpy(feature_h5["coords"][:]).float()  # pyright: ignore[reportIndexIssue]
-    stride = cast(float, feature_h5.attrs.get("tile_size", get_stride(coords)))
+    if "coords" in feature_h5:
+        coords = torch.from_numpy(feature_h5["coords"][:]).float()  # pyright: ignore[reportIndexIssue]
+        stride = cast(float, feature_h5.attrs.get("tile_size", get_stride(coords)))
 
-    if feature_h5.attrs.get("unit") == "um":
-        coords_um = coords
-    elif round(stride) == 224:
-        _logger.info(
-            f"{feature_h5.filename}: tile stride is roughly 224, assuming coordinates have unit 256um/224px (historic STAMP format)"
-        )
-        coords_um = coords / 224 * 256
-    elif (version_str := feature_h5.attrs.get("stamp_version")) and (
-        extraction_version := Version(version_str)
-    ) > Version(stamp.__version__):
-        raise RuntimeError(
-            f"features were extracted with a newer version of stamp, please update your stamp to at least version {extraction_version}."
-        )
+        if feature_h5.attrs.get("unit") == "um":
+            coords_um = coords
+        elif round(stride) == 224:
+            _logger.info(
+                f"{feature_h5.filename}: tile stride is roughly 224, assuming coordinates have unit 256um/224px (historic STAMP format)"
+            )
+            coords_um = coords / 224 * 256
+        elif (version_str := feature_h5.attrs.get("stamp_version")) and (
+            extraction_version := Version(version_str)
+        ) > Version(stamp.__version__):
+            raise RuntimeError(
+                f"features were extracted with a newer version of stamp, please update your stamp to at least version {extraction_version}."
+            )
+        else:
+            raise RuntimeError(
+                "unable to infer coordinates from feature file. Please reextract them using `stamp preprocess`."
+            )
     else:
-        raise RuntimeError(
-            "unable to infer coordinates from feature file. Please reextract them using `stamp preprocess`."
-        )
+        # "coords" not found, create dummy coordinates based on number of feature instances.
+        n_tiles = feature_h5["feats"].shape[0]
+        # Create dummy coordinates with two columns.
+        coords_um = torch.arange(n_tiles * 2, dtype=torch.float32).reshape(n_tiles, 2)
 
     return coords_um
 

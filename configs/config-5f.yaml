@@ -7,7 +7,7 @@ preprocessing:
   extractor: "ctranspath"
 
   # Device to run feature extraction on ("cpu", "cuda", "cuda:0", etc.)
-  device: "cuda"
+  accelerator: "cuda"
 
   # Optional settings:
 
@@ -29,7 +29,7 @@ preprocessing:
 
 
 crossval:
-  output_dir: "/data/horse/ws/s1787956-cobra-demo/data/stamp-output/cobraI-20x-TCGA-BRCA-ESR1-full"
+  output_dir: "/p/scratch/mfmpm/tim/data/capsule/blood-new-chunks-5"
 
   # An excel (.xlsx) or CSV (.csv) table containing the clinical information of
   # patients.  Patients not present in this file will be ignored during training.
@@ -38,10 +38,10 @@ crossval:
   # containing a unique ID for each patient,
   # and one with the value of `ground_truth_label` (also defined below),
   # containing the ground truth corresponding to that patient.
-  clini_table: "/data/horse/ws/s1787956-cobra-demo/data/targets/tcga_brca.csv"
+  clini_table: "/p/scratch/mfmpm/tim/data/capsule/targets/blood_train.csv"
 
   # Directory the extracted features are saved in.
-  feature_dir: "/data/horse/ws/s1787956-TCGA/features/features-20x/virchow2/TCGA-BRCA/virchow2-stamp-maru-21-12-24"
+  feature_dir: "/p/scratch/mfmpm/tim/data/capsule/features/features/caps-fm-5-chunks-e100-train"
 
   # A table (.xlsx or .csv) relating every patient to their feature files.
   # The table must contain at least two columns,
@@ -52,38 +52,22 @@ crossval:
   # Patient IDs not present in the clini table
   # as well as non-existent feature paths
   # are ignored.
-  slide_table: "/data/horse/ws/s1787956-cobra-demo/data/targets/slide_table_tcga_brca.csv"
+  slide_table: "/mnt/bulk-titan/timlenz/capsule/data/targets/slide_table_20241015.csv"
 
   # Name of the column from the clini table to train on.
-  ground_truth_label: "ESR1"
+  ground_truth_label: "small_intestine_transit_time_class"
 
   # Optional settings:
   patient_label: "PATIENT"
   filename_label: "FILENAME"
-
+  batch_size: 1
+  bag_size: null
   # The categories occurring in the target label column of the clini table.
   # If unspecified, they will be inferred from the table itself.
   #categories: ["mutated", "wild type"]
 
   # Number of folds to split the data into for cross-validation
   #n_splits: 5
-
-  # Experimental features:
-
-  # Please try uncommenting the settings below
-  # and report if they improve / reduce model performance!
-
-  # Change the precision of features during training
-  #use_vary_precision_transform: true
-
-  # Use ALiBi positional embedding
-  # use_alibi: true
-
-  # Finetune pretrained COBRA
-  freeze: "None"
-  use_cobra: true
-  cobra_version: 1
-
 
 
 training:
@@ -129,21 +113,18 @@ training:
   # Change the precision of features during training
   #use_vary_precision_transform: true
 
-  # Use ALiBi positional embedding
-  # use_alibi: true
-
 
 deployment:
-  output_dir: "/path/to/save/files/to"
+  output_dir: "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/deploy"
 
   # An excel (.xlsx) or CSV (.csv) table containing the clinical information of
   # patients.  Patients not present in this file will be ignored during training.
   # Has to contain at least two columns, one titled "PATIENT", containing a patient ID,
   # and a second column containing the categorical ground truths for that patient.
-  clini_table: "/path/of/clini.csv"
+  clini_table: "/mnt/bulk-titan/timlenz/capsule/data/targets/categorized_test_table.csv"
 
   # Directory the extracted features are saved in.
-  feature_dir: "/path/your/extracted/features/are/stored/in"
+  feature_dir: "/mnt/bulk-titan/timlenz/capsule/features/features/caps-fm-5-chunks-e100-test"
 
   # A table (.xlsx or .csv) relating every patient to their feature files.
   # The table must contain at least two columns, one titled "PATIENT",
@@ -151,17 +132,21 @@ deployment:
   # called "FILENAME", containing the feature file path relative to `feature_dir`.
   # Patient IDs not present in the clini table as well as non-existent feature
   # paths are ignored.
-  slide_table: "/path/of/slide.csv"
+  slide_table: "/mnt/bulk-titan/timlenz/capsule/data/targets/slide_table_20241015.csv"
 
   # Name of the column from the clini to compare predictions to.
-  ground_truth_label: "KRAS"
+  ground_truth_label: "small_intestine_transit_time_class"
 
   patient_label: "PATIENT"
   filename_label: "FILENAME"
 
   # Path of the trained model to deploy.
   checkpoint_paths:
-  - "/path/to/model.ckpt"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/split-0/model.ckpt"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/split-1/model.ckpt"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/split-2/model.ckpt"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/split-3/model.ckpt"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/split-4/model.ckpt"
   # You can also combine multiple models to get a majority vote from multiple models.
   # This is especially handy to e.g. combine the models from a cross-validation.
   #- "/path/to/model2.ckpt"
@@ -169,31 +154,32 @@ deployment:
 
 
 statistics:
-  output_dir: "/data/horse/ws/s1787956-cobra-demo/data/stamp-output/cobraII-20x-TCGA-BRCA-ESR1/statistics"
+  output_dir: "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/deploy"
 
   # Name of the target label.
-  ground_truth_label: "ESR1"
+  ground_truth_label: "small_intestine_transit_time_class"
 
   # A lot of the statistics are computed "one-vs-all", i.e. there needs to be
   # a positive class to calculate the statistics for.
-  true_class: "positive"
+  true_class: "high"
 
   # The patient predictions to generate the statistics from.
   # For a single deployment, it could look like this:
   pred_csvs:
-  - "/data/horse/ws/s1787956-cobra-demo/data/stamp-output/cobraII-20x-TCGA-BRCA-ESR1/split-0/patient-preds.csv"
-  - "/data/horse/ws/s1787956-cobra-demo/data/stamp-output/cobraII-20x-TCGA-BRCA-ESR1/split-1/patient-preds.csv"
-  - "/data/horse/ws/s1787956-cobra-demo/data/stamp-output/cobraII-20x-TCGA-BRCA-ESR1/split-2/patient-preds.csv"
-  - "/data/horse/ws/s1787956-cobra-demo/data/stamp-output/cobraII-20x-TCGA-BRCA-ESR1/split-3/patient-preds.csv" 
-  - "/data/horse/ws/s1787956-cobra-demo/data/stamp-output/cobraII-20x-TCGA-BRCA-ESR1/split-4/patient-preds.csv" 
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/deploy/patient-preds-0.csv"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/deploy/patient-preds-1.csv"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/deploy/patient-preds-2.csv"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/deploy/patient-preds-3.csv"
+  - "/mnt/bulk-titan/timlenz/capsule/small-intestine-transit-time-5/deploy/patient-preds-4.csv"
+  #- "/mnt/bulk-titan/timlenz/capsule/blood-5/deploy/patient-preds.csv"
 
   # For a cross-validation with five folds, it could look like this:
   #pred_csvs:
-  #- "/path/to/split-0/patient-preds.csv"
-  #- "/path/to/split-1/patient-preds.csv"
-  #- "/path/to/split-2/patient-preds.csv"
-  #- "/path/to/split-3/patient-preds.csv"
-  #- "/path/to/split-4/patient-preds.csv"
+  #- "/path/to/fold-0/patient-preds.csv"
+  #- "/path/to/fold-1/patient-preds.csv"
+  #- "/path/to/fold-2/patient-preds.csv"
+  #- "/path/to/fold-3/patient-preds.csv"
+  #- "/path/to/fold-4/patient-preds.csv"
 
 heatmaps:
   output_dir: "/path/to/save/files/to"

@@ -181,6 +181,11 @@ def extract_(
             from stamp.preprocessing.extractor.h_optimus_0 import h_optimus_0
             
             extractor = h_optimus_0()
+
+        case ExtractorName.H_OPTIMUS_1:
+            from stamp.preprocessing.extractor.h_optimus_1 import h_optimus_1
+            
+            extractor = h_optimus_1()
             
         case ExtractorName.UNI2:
             from stamp.preprocessing.extractor.uni2 import uni2

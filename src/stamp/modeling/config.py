@@ -27,7 +27,7 @@ class TrainConfig(BaseModel):
     filename_label: PandasLabel = "FILENAME"
 
     # Dataset and -loader parameters
-    bag_size: int = 1024
+    bag_size: int | None = 1024
     num_workers: int = min(os.cpu_count() or 1, 8)
 
     # Training paramenters

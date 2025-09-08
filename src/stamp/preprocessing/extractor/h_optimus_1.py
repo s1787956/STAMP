@@ -7,10 +7,10 @@ from torchvision import transforms
 from stamp.preprocessing.extractor import Extractor
 
 
-def h_optimus_0():
+def h_optimus_1():
     """Extracts features from slide tiles using H-optimus-0 tile encoder."""
     
-    model = timm.create_model("hf-hub:bioptimus/H-optimus-0", pretrained=True, init_values=1e-5, dynamic_img_size=False)
+    model = timm.create_model("hf-hub:bioptimus/H-optimus-1", pretrained=True, init_values=1e-5, dynamic_img_size=False)
 
 
     transform = transforms.Compose([
@@ -24,5 +24,5 @@ def h_optimus_0():
     return Extractor(
         model=model,
         transform=transform,
-        identifier="h_optimus_0",  # type: ignore
+        identifier="h_optimus_1",  # type: ignore
     )

@@ -30,7 +30,6 @@ class VirchowFull(torch.nn.Module):
         class_token = output[:, 0]    # size: 1 x 1280
         patch_tokens = output[:, 1:]  # size: 1 x 256 x 1280
         embedding = torch.cat([class_token, patch_tokens.mean(1)], dim=-1)
-        breakpoint()
         return embedding
     
 def virchow() -> Extractor[VirchowFull]:
