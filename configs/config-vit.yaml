@@ -29,7 +29,7 @@ preprocessing:
 
 
 crossval:
-  output_dir: "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino"
+  output_dir: "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b"
   # An excel (.xlsx) or CSV (.csv) table containing the clinical information of
   # patients.  Patients not present in this file will be ignored during training.
   # Has to contain at least two columns,
@@ -40,7 +40,7 @@ crossval:
   clini_table: "/p/scratch/mfmpm/tim/data/capsule/targets/blood_train.csv"
 
   # Directory the extracted features are saved in.
-  feature_dir: "/p/scratch/mfmpm/tim/data/capsule/dinov2-l-frames-skip5-train"
+  feature_dir: "/p/scratch/mfmpm/tim/data/capsule/vit_conv_base-frames-skip5-train"
 
   # A table (.xlsx or .csv) relating every patient to their feature files.
   # The table must contain at least two columns,
@@ -115,7 +115,7 @@ training:
 
 
 deployment:
-  output_dir: "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/deploy"
+  output_dir: "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/deploy"
 
   # An excel (.xlsx) or CSV (.csv) table containing the clinical information of
   # patients.  Patients not present in this file will be ignored during training.
@@ -124,7 +124,7 @@ deployment:
   clini_table: "/p/scratch/mfmpm/tim/data/capsule/targets/blood_test.csv"
 
   # Directory the extracted features are saved in.
-  feature_dir: "/p/scratch/mfmpm/tim/data/capsule/dinov2-l-frames-skip5-test"
+  feature_dir: "/p/scratch/mfmpm/tim/data/capsule/vit_conv_base-frames-skip5-test"
 
   # A table (.xlsx or .csv) relating every patient to their feature files.
   # The table must contain at least two columns, one titled "PATIENT",
@@ -142,11 +142,11 @@ deployment:
 
   # Path of the trained model to deploy.
   checkpoint_paths:
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/split-0/model.ckpt"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/split-1/model.ckpt"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/split-2/model.ckpt"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/split-3/model.ckpt"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/split-4/model.ckpt"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/split-0/model.ckpt"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/split-1/model.ckpt"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/split-2/model.ckpt"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/split-3/model.ckpt"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/split-4/model.ckpt"
   # You can also combine multiple models to get a majority vote from multiple models.
   # This is especially handy to e.g. combine the models from a cross-validation.
   #- "/path/to/model2.ckpt"
@@ -155,7 +155,7 @@ deployment:
 
 
 statistics:
-  output_dir: "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/deploy"
+  output_dir: "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/deploy"
 
   # Name of the target label.
   ground_truth_label: "bleeding_small_intestine"
@@ -167,11 +167,11 @@ statistics:
   # The patient predictions to generate the statistics from.
   # For a single deployment, it could look like this:
   pred_csvs:
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/deploy/patient-preds-0.csv"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/deploy/patient-preds-1.csv"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/deploy/patient-preds-2.csv"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/deploy/patient-preds-3.csv"
-  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-dino/deploy/patient-preds-4.csv"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/deploy/patient-preds-0.csv"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/deploy/patient-preds-1.csv"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/deploy/patient-preds-2.csv"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/deploy/patient-preds-3.csv"
+  - "/p/scratch/mfmpm/tim/data/capsule/blood-new-vit-b/deploy/patient-preds-4.csv"
   #- "/mnt/bulk-titan/timlenz/capsule/blood-5/deploy/patient-preds.csv"
 
   # For a cross-validation with five folds, it could look like this:

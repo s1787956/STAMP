@@ -54,7 +54,7 @@ def deploy_categorical_model_(
                   for checkpoint_path in checkpoint_paths
         ]
     else:
-        model = [
+        models= [
             LitVisionTransformer.load_from_checkpoint(
                 checkpoint_path=checkpoint_path
             ).eval()
